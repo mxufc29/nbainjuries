@@ -18,7 +18,7 @@ The NBA’s official guidelines on injury tracking and reporting for teams state
 
 The data submitted are stored as pdf reports on the NBA’s server, organized in hourly intervals (at each :30 minute mark) across each day of the regular season and postseason. For example, for a particular day such as mm/dd/yyyy, the first report is timestamped mm/dd/yyyy 12:30am, and the last report is timestamped mm/dd/yyyy 11:30 pm – a total of 24 reports.
 
-Data is only available for the 2021-2022 NBA season and after. Within these seasons, data is not available for any preseason games. Data is not available at certain times/dates, for instance during stretches of the calendar in which no games occur (e.g. all star break, playoffs), periodic gaps in data availability, etc.
+Data is only available for the 2021-2022 NBA season and after. Among these seasons, data is not available for any preseason games. Data is not available at certain times/dates, for instance during stretches of the calendar in which no games occur (e.g. all star break, playoffs), periodic gaps in data availability, etc.
 
 ---
 
