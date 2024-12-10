@@ -4,7 +4,7 @@ Created by Michael Xu as an additional feature to the swar/nba_api library
 
 ---
 
-## Storage Path
+## //path
 
 Package to parse and extract data on player injuries and statuses from the NBA’s official injury reports.
 
