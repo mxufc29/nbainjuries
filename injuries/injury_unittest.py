@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime, timedelta
 import random
 import pandas as pd
-from injuries import Injury, constants
+from injuries import Injury, _constants
 
 
 class getinjurydata_test(unittest.TestCase):
@@ -12,7 +12,7 @@ class getinjurydata_test(unittest.TestCase):
                               'ReportTime']
 
     def test_randomurl(self):
-        ts_start = constants.dictkeydts['2122']['regseastart']
+        ts_start = _constants.dictkeydts['2122']['regseastart']
         ts_end = datetime(2021, 12, 31, 23, 30)
         hrs = int((ts_end - ts_start).total_seconds() / 3600)
         random.seed(42)
@@ -27,7 +27,7 @@ class getinjurydata_test(unittest.TestCase):
                 self.assertIn(colx, self.expected_cols)
 
     def test_urlinvalid(self):
-        ts_test = constants.dictkeydts['2223']['asbstart'] + timedelta(hours=10)
+        ts_test = _constants.dictkeydts['2223']['asbstart'] + timedelta(hours=10)
         with self.assertRaises(FileNotFoundError):
             result = Injury.get_injurydata(ts_test)
             print(f"Timestamp - {ts_test}")
@@ -37,8 +37,8 @@ class getinjurydata_test(unittest.TestCase):
 
     def test_randomlocalvalid(self):
         while True:
-            ts_start = constants.dictkeydts['2324']['regseastart']
-            ts_end = constants.dictkeydts['2324']['regseaend']
+            ts_start = _constants.dictkeydts['2324']['regseastart']
+            ts_end = _constants.dictkeydts['2324']['regseaend']
             hrs = int((ts_end - ts_start).total_seconds() / 3600)
             random.seed(29)
             ts_test = ts_start + timedelta(hours=random.randint(0, hrs))
@@ -122,14 +122,14 @@ class checkreportvalid_test(unittest.TestCase):
 
     def test_valid(self):
         random.seed(29)
-        ts_test = constants.dictkeydts['2324']['regseastart'] + timedelta(hours=random.randint(0, 730))
+        ts_test = _constants.dictkeydts['2324']['regseastart'] + timedelta(hours=random.randint(0, 730))
         result = Injury.check_reportvalid(ts_test)
         print(f"Timestamp - {ts_test}")
         self.assertEqual(result, True)
 
     def test_headers(self):
         random.seed(100)
-        ts_test = constants.dictkeydts['2324']['regseastart'] + timedelta(hours=random.randint(0, 730))
+        ts_test = _constants.dictkeydts['2324']['regseastart'] + timedelta(hours=random.randint(0, 730))
         result = Injury.check_reportvalid(ts_test, headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
                                                             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
                                                             "Accept-Language": "en-US,en;q=0.9",

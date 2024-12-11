@@ -1,7 +1,7 @@
 import pandas as pd
 from os import path, PathLike
 from datetime import datetime, timedelta
-from injuries import constants, parser
+from injuries import _constants, _parser
 
 
 def get_injurydata(timestamp: datetime, local: bool = False, localdir: str | PathLike = None, **kwargs) -> pd.DataFrame:
@@ -17,28 +17,28 @@ def get_injurydata(timestamp: datetime, local: bool = False, localdir: str | Pat
         if 'headers' in kwargs:
             headerparam = kwargs['headers']
         else:
-            headerparam = constants.requestheaders
+            headerparam = _constants.requestheaders
     if timestamp < datetime(year=2023, month=5, day=2, hour=17, minute=30):  # 21-22 and part of 22-23 season
-        area_bounds = constants.area_params2223_a
-        col_bounds = constants.cols_params2223_a
-    elif datetime(year=2023, month=5, day=2, hour=17, minute=30) <= timestamp <= constants.dictkeydts['2223'][
+        area_bounds = _constants.area_params2223_a
+        col_bounds = _constants.cols_params2223_a
+    elif datetime(year=2023, month=5, day=2, hour=17, minute=30) <= timestamp <= _constants.dictkeydts['2223'][
         'ploffend']:  # remainder of 22-23 season
-        area_bounds = constants.area_params2223_b
-        col_bounds = constants.cols_params2223_b
-    elif constants.dictkeydts['2324']['regseastart'] <= timestamp <= constants.dictkeydts['2324']['ploffend']:  # 23-24 season
-        area_bounds = constants.area_params2324
-        col_bounds = constants.cols_params2324
-    elif constants.dictkeydts['2425']['regseastart'] <= timestamp:  # 24-25 season
-        area_bounds = constants.area_params2425
-        col_bounds = constants.cols_params2425
+        area_bounds = _constants.area_params2223_b
+        col_bounds = _constants.cols_params2223_b
+    elif _constants.dictkeydts['2324']['regseastart'] <= timestamp <= _constants.dictkeydts['2324']['ploffend']:  # 23-24 season
+        area_bounds = _constants.area_params2324
+        col_bounds = _constants.cols_params2324
+    elif _constants.dictkeydts['2425']['regseastart'] <= timestamp:  # 24-25 season
+        area_bounds = _constants.area_params2425
+        col_bounds = _constants.cols_params2425
     else:  # out of range for covered seasons - default to 24-25 params
-        area_bounds = constants.area_params2425
-        col_bounds = constants.cols_params2425
+        area_bounds = _constants.area_params2425
+        col_bounds = _constants.cols_params2425
 
     if local:  # TODO patch this
-        return parser.extract_injreplocal(_gen_injrep_dlpath(timestamp, localdir), area_headpg=area_bounds, cols_headpg=col_bounds)
+        return _parser.extract_injreplocal(_gen_injrep_dlpath(timestamp, localdir), area_headpg=area_bounds, cols_headpg=col_bounds)
     else:
-        return parser.extract_injrepurl(gen_injreplink(timestamp), area_headpg=area_bounds, cols_headpg=col_bounds,
+        return _parser.extract_injrepurl(gen_injreplink(timestamp), area_headpg=area_bounds, cols_headpg=col_bounds,
                                         headers=headerparam)
 
 
@@ -52,8 +52,8 @@ def check_reportvalid(timestamp: datetime, **kwargs) -> bool:
     if 'headers' in kwargs:
         headerparam = kwargs['headers']
     else:
-        headerparam = constants.requestheaders
-    return parser.validate_injrepurl(gen_injreplink(timestamp), headers=headerparam)
+        headerparam = _constants.requestheaders
+    return _parser.validate_injrepurl(gen_injreplink(timestamp), headers=headerparam)
 
 
 def gen_injreplink(timestamp: datetime) -> str:
@@ -64,7 +64,7 @@ def gen_injreplink(timestamp: datetime) -> str:
     """
     URLstem_date = timestamp.date().strftime('%Y-%m-%d')
     URLstem_time = (timestamp - timedelta(minutes=30)).time().strftime('%I%p')
-    return constants.urlstem_injreppdf.replace('*', URLstem_date + '_' + URLstem_time)
+    return _constants.urlstem_injreppdf.replace('*', URLstem_date + '_' + URLstem_time)
 
 
 def _gen_injrep_dlpath(timestamp: datetime, directorypath: str | PathLike) -> str:
