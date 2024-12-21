@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "nba-injury-report-api"
+version = "0.1.0"
+description = "An API for accessing player injuries, illnesses, and rest contained within the NBA Injury Report"
+authors = ["Michael Xu <xu.michael29@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+maintainers = [
+    "Swar Patel <swar.m.patel@gmail.com>",
+    "Randy Forbes <randy.forbes@gmail.com>",
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development"
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pypdf2 = "^3.0.1"
+requests = "^2.32.3"
+tabula = "^1.0.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.1.1"
+pandas = "^2.2.3"
+
+[tool.pytest.ini_options]
+testpaths = "./tests/unit/"
