@@ -24,7 +24,7 @@ Data is only available for the 2021-2022 NBA season and after. Among these seaso
 
 ## Methods
 
-### 'get_injurydata(timestamp: datetime, local: bool = False, localdir: str | PathLike = None, return_df: bool = False, **kwargs):'
+### `get_injurydata(timestamp: datetime, local: bool = False, localdir: str | PathLike = None, return_df: bool = False, **kwargs):`
 
 Extracts the injury data from the injury report at a specific date/time.
 
