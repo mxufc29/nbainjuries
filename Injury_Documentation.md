@@ -24,7 +24,8 @@ Data is only available for the 2021-2022 NBA season and after. Among these seaso
 
 ## Methods
 
-### `get_injurydata(timestamp: datetime, local: bool = False, localdir: str | PathLike = None, **kwargs) -> pd.DataFrame`
+### 'get_injurydata(timestamp: datetime, local: bool = False, localdir: str | PathLike = None, return_df: bool = False,
+                   **kwargs):'
 
 Extracts the injury data from the injury report at a specific date/time, in the form of a DataFrame.
 
@@ -32,7 +33,8 @@ Extracts the injury data from the injury report at a specific date/time, in the 
 - `timestamp`: date/time of the report for retrieval, in the form of a `datetime` object
   - Example: `datetime(year=2023, month=5, day=2, hour=17, minute=30)`
 - `local`: if the report to extract from is saved locally; default to `False` (retrieve live from URL directly)
-- `localdir`: local directory path of data source, required if `local=True`
+- `local dir`: local directory path of data source, required if `local=True`
+- `return_df`: return output as dataframe, otherwise as dict/json format
 - `kwargs`: if user would like to specify custom HTML headers in place of default ones for the HTML request
 
 ---
