@@ -1,6 +1,5 @@
 # Injury.py
 
-Created by Michael Xu as an additional feature to the swar/nba_api library
 
 ---
 
