@@ -6,11 +6,11 @@ A package for retrieving historical and real-time NBA player injury data in a st
 
 - [Description](#description)
 
-- [Installation / Getting Started](#installationgetting-started)
+- [Installation / Getting Started](#installation--getting-started)
 
 - [API Reference](#api-reference)
 
-- [Examples / Usage](#examplesusage)
+- [Examples / Usage](#examples--usage)
 
 - [Contributing](#contributing)
 
