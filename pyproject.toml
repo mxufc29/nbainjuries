@@ -5,11 +5,11 @@ packages = [
     { include = "nbainjuries", from = "src" }
 ]
 description = "Library for accessing and extracting real-time NBA player injury data from official team injury reports."
-authors = ["mxufc29 <mxufc29@outlook.com>"]
+authors = ["mxufc29 <mxufc29 (at) outlook (dot) com>"]
 license = "MIT"
 readme = "README.md"
 repository = "https://github.com/mxufc29/nbainjuries"
-documentation = "https://github.com/mxufc29/nbainjuries/blob/main/Injury_Documentation.md"
+documentation = "https://github.com/mxufc29/nbainjuries/blob/main/Documentation.md"
 classifiers = ["Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
