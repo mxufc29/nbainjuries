@@ -1,39 +1,52 @@
-[tool.poetry]
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+
+[project]
 name = "nbainjuries"
-version = "0.5.0"
-packages = [
-    { include = "nbainjuries", from = "src" }
-]
-description = "Library for accessing and extracting real-time NBA player injury data from official team injury reports."
-authors = ["mxufc29 <mxufc29 (at) outlook (dot) com>"]
-license = "MIT"
+version = "0.5.1"
+description = "Library for accessing and extracting NBA player injury data from official team injury reports."
 readme = "README.md"
-repository = "https://github.com/mxufc29/nbainjuries"
-documentation = "https://github.com/mxufc29/nbainjuries/blob/main/Documentation.md"
+requires-python = ">=3.10,<4.0"
+license = {text = "MIT"}
+authors = [
+  {name = "mxufc29", email = "mxufc29@outlook.com"}
+]
+keywords = ["nba", "injuries", "basketball", "sports", "analytics", "sports science"]
 classifiers = ["Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
     "Operating System :: OS Independent",
     "Topic :: Software Development",
     "Topic :: Scientific/Engineering :: Information Analysis"]
-keywords = ["nba", "injuries", "basketball", "sports", "analytics"]
+dependencies = [
+  "aiohttp>=3.9.3,<4.0",
+  "jpype1>=1.5.2,<1.6.0",
+  "pandas>=2.2.3,<3.0",
+  "PyPDF2>=3.0.1,<4.0",
+  "requests>=2.32.3,<3.0",
+  "tabula-py>=2.9.0,<3.0",
+]
 
-[tool.poetry.dependencies]
-python    = "^3.9"
-aiohttp   = "^3.9.3"
-jpype1    = "^1.5.2"
-pandas    = "^2.2.3"
-PyPDF2    = "^3.0.1"
-requests  = "^2.32.3"
-tabula-py = "^2.9.0"
 
-[tool.poetry.dev-dependencies]
+[project.urls]
+Homepage = "https://github.com/mxufc29/nbainjuries"
+Source = "https://github.com/mxufc29/nbainjuries"
+Documentation = "https://github.com/mxufc29/nbainjuries/blob/main/Documentation.md"
+
+
+[tool.poetry]
+packages = [
+    { include = "nbainjuries", from = "src" }
+]
+
+
+[tool.poetry.group.dev]
+optional = true
 
 
 [tool.poetry.group.dev.dependencies]
 setuptools = "^80.9.0"
-
-[build-system]
-requires = ["poetry-core>=1.8.0,<2.0.0"]
-build-backend = "poetry.core.masonry.api"

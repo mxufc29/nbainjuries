@@ -35,7 +35,7 @@ This package was conceived and formulated as a tool for systematically retrievin
 
 #### Prerequisites
 
-- **Python 3.9+**
+- **Python 3.10+**
 
 - **Java** - `nbainjuries` utilizes the tabula-py module for data processing, which requiresa Java Runtime (JRE) or Development Kit (JDK) version 8 or higher. Ensure you have [Java installed](https://www.java.com/en/download/manual.jsp) and that that running `java` from your system's terminal works (i.e., the `java` command is available in your system’s PATH).
   

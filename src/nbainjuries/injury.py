@@ -8,13 +8,12 @@ from ._util import _gen_url, _gen_filepath
 def get_reportdata(timestamp: datetime, local: bool = False, localdir: str | PathLike = None, return_df: bool = False,
                    **kwargs):
     """
-    Extract injury data from the injury report at a specific date/time (datetime object).
+    Extract injury data from the injury report at a specific date/time
     :param timestamp: datetime object of the report for retrieval
     :param local: if source to retreive saved locally; default to False (retrieve from url)
     :param localdir: local directory path of source, needed if local = True
     :param return_df: return output as dataframe
     :param kwargs: custom html headers in place of default ones
-    :return:
     """
     if not local:
         headerparam = kwargs.get('headers', _constants.requestheaders)
@@ -49,10 +48,9 @@ def get_reportdata(timestamp: datetime, local: bool = False, localdir: str | Pat
 
 def check_reportvalid(timestamp: datetime, **kwargs) -> bool:
     """
-    Confirm the access/validity of the injury report URL at a specific date/time (datetime object).
+     Confirm the access/validity of the injury report URL at a specific date/time
     :param timestamp:
     :param kwargs: custom html headers in place of default ones
-    :return:
     """
     headerparam = kwargs.get('headers', _constants.requestheaders)
     try:
@@ -66,9 +64,8 @@ def check_reportvalid(timestamp: datetime, **kwargs) -> bool:
 
 def gen_url(timestamp: datetime) -> str:
     """
-    Generate the URL link of the injury report on the NBA.com server.
+    Generate the URL link of the injury report on server
     :param timestamp: datetime of the injury report
-    :return: URL of injury report based on the specified timestamp
     """
     return _gen_url(timestamp)
 
