@@ -48,9 +48,7 @@ def get_reportdata(timestamp: datetime, local: bool = False, localdir: str | Pat
 
 def check_reportvalid(timestamp: datetime, **kwargs) -> bool:
     """
-     Confirm the access/validity of the injury report URL at a specific date/time
-    :param timestamp:
-    :param kwargs: custom html headers in place of default ones
+    Validate data availability of report at a specific date/time
     """
     headerparam = kwargs.get('headers', _constants.requestheaders)
     try:
@@ -64,8 +62,6 @@ def check_reportvalid(timestamp: datetime, **kwargs) -> bool:
 
 def gen_url(timestamp: datetime) -> str:
     """
-    Generate the URL link of the injury report on server
-    :param timestamp: datetime of the injury report
     """
     return _gen_url(timestamp)
 

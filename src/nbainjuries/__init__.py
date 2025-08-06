@@ -9,7 +9,8 @@ if not jpype.isJVMStarted():
     java_opts = ["-Dfile.encoding=UTF-8", "-Xrs"]
     jpype.startJVM(jvmpath, *java_opts, convertStrings=False)
 
+from importlib.metadata import version
 from . import injury, injury_asy
 
-__version__ = '0.5.0'
+__version__ = version(__package__)
 __all__ = ['injury', 'injury_asy']

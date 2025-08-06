@@ -38,4 +38,4 @@ async def extconcat_all(startdt: datetime, enddt: datetime, sleep_dur: float,
 if __name__ == "__main__":
     start_batchecall = datetime(2023, 2, 1, 0, 30)
     end_batchecall = datetime(2023, 2, 28, 23, 30)
-    df_output = asyncio.run(extconcat_all(startdt=start_batchecall, enddt=end_batchecall, sleep_dur=0.1))
+    df_output = asyncio.run(extconcat_all(startdt=start_batchecall, enddt=end_batchecall, sleep_dur=0.25))

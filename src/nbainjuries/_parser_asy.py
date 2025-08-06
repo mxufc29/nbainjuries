@@ -30,10 +30,10 @@ async def validate_irurl_async(filepath: str | PathLike, session: ClientSession,
     try:
         async with session.get(filepath, **kwargs) as resp:
             resp.raise_for_status()
-            print(f"Validated {filepath.split('/')[-1]}.")
+            print(f"Validated {filepath.split('/')[-1].rsplit('.', 1)[0]}.")
             return await resp.read()
     except aiohttp.ClientError as e_gen:
-        print(f"Failed validation - {filepath.split('/')[-1]}.")
+        print(f"Failed validation - {filepath.split('/')[-1].rsplit('.', 1)[0]}.")
         raise URLRetrievalError(filepath, e_gen)
         ## TODO logging?
 

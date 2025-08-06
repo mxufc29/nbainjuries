@@ -26,10 +26,10 @@ The NBA’s official guidelines on injury tracking and reporting for teams state
 
     (c) For the second game of a back-to-back, teams must report the above information by 1 p.m. local time on the day of the game.
 
-Official player injury data are submitted by team medical staff pursuant to the above guidelines, and are stored as static report files on the NBA’s server, organized in hourly snapshots across each day of the regular season and postseason. Historical data in this
-format have been available since the 2021-2022 NBA season. Data are not available for preseason games, and are not available at certain times/dates, for instance during stretches of the calendar in which no games occur (e.g. all star break, postseason), and other periodic gaps in data availability.
+Official player injury data are submitted by team medical staff pursuant to above guidelines, and are stored statically on the NBA’s server, organized in hourly snapshots across each day of the regular season and postseason. Historical data in this
+format have been available since the 2021-2022 NBA season. Data are not available for preseason games, and are not available at certain times/dates, for instance during stretches of the calendar in which no games occur (e.g. all star break, postseasonas well as other periodic gaps in data availability.
 
-This package was conceived and formulated as a tool for systematically retrieving, extracting, and cleaning the data in these static reports. It is intended to be versatile in its usage, and can serve as both a potential ETL pipeline for storage/analysis and an API-style interface for querying up-to date injury information in quasi real-time settings.
+This package was conceived and formulated as a tool for systematically retrieving, extracting, and transforming the data in these static reports. It is intended to be versatile in its usage, and can serve as part of both a potential ETL pipeline for storage/analysis and an API-style interface for querying up-to date injury information in quasi real-time settings.
 
 ## Installation / Getting Started
 
@@ -37,11 +37,11 @@ This package was conceived and formulated as a tool for systematically retrievin
 
 - **Python 3.10+**
 
-- **Java** - `nbainjuries` utilizes the tabula-py module for data processing, which requiresa Java Runtime (JRE) or Development Kit (JDK) version 8 or higher. Ensure you have [Java installed](https://www.java.com/en/download/manual.jsp) and that that running `java` from your system's terminal works (i.e., the `java` command is available in your system’s PATH).
+- **Java** - `nbainjuries` utilizes the tabula-py module for data processing, which requires a Java Runtime (JRE) or Development Kit (JDK) version 8 or higher. Ensure you have an appropriate version of [Java installed](https://www.java.com/en/download/manual.jsp) and that that running `java` from your system's terminal works (i.e., the `java` command is available in your system’s PATH).
   
-  - Step-by-step [instructions](https://www.baeldung.com/java-home-on-windows-mac-os-x-linux) on adding Java to system PATH variable
+  - [Instructions](https://www.baeldung.com/java-home-on-windows-mac-os-x-linux) on adding Java to system PATH variable
   
-  - To verify Java is successfully configured, ensure that execution of “java -version” in your system’s terminal returns information about the java version (no errors or command not found messages).
+  - To verify Java is successfully configured, ensure that execution of “java -version” in your system’s shell returns information about the java version (no errors or command not found messages).
   
   - For additional information/troubleshooting in Java, please reference the [tabula-py getting started page](https://tabula-py.readthedocs.io/en/latest/getting_started.html#requirements)
 
@@ -126,18 +126,20 @@ df_output = injury.get_reportdata(datetime(year=2025, month=4, day=25, hour=17, 
 
 #### Batch Report Query
 
-Let's say one wants to retrieve and consolidate all injury report data for the entire 2023-2024 NBA regular season, or obtain the data from a random sample of 100 injury reports from the 2023-2024 NBA regular season. For improved processing speed, instead of the `injury` module, use the `injury_asy` module in addition to `asyncio` to enable concurrent (batch) processing of reports. For an example of this usage, reference tests/injuryasy_example.py
+Let's say one wants to retrieve and consolidate all injury report data for the entire 2023-2024 NBA regular season, or obtain the data from a random sample of 100 injury reports from the 2023-2024 NBA regular season. For improved processing speed, instead of the `injury` module, use the `injury_asy` module in addition to `asyncio` to enable concurrent (batch) processing of reports.
 
 ## Contributing
 
-I welcome any suggestions or feedback; please feel free to submit [comments](https://github.com/mxufc29/nbainjuries/issues) and/or [pull requests](https://github.com/mxufc29/nbainjuries/pulls) on GitHub.
+I welcome any suggestions or feedback; please feel free to submit [comments](https://github.com/mxufc29/nbainjuries/issues) and/or [pull requests](https://github.com/mxufc29/nbainjuries/pulls) on GitHub. 
 
-I am also actively looking for collaborators on some potential ancillary projects in the pipeline:
+I am also actively looking for collaborators to explore and potentially pursue some additional analytics projects regarding NBA injuries; some preliminary avenues include:
 
 (a) expanding data coverage to include seasons before 2021-2022,
 
 (b) developing a centralized database solution to store these data
 
-(c) classifying/analyzing/dashboarding season-level injury trends.
+(c) classifying/dashboarding season-level injury trends
 
-If any/all of these avenues are of interest, please feel free to reach out to me via email at mxufc29 (at) outlook (dot) com.
+(d) formulating new and refining existing metrics to understand injury risk and recovery with more precision
+
+If any of these avenues are of interest, please feel free to reach out to me via email at mxufc29 (at) outlook (dot) com.

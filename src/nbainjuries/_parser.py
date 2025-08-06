@@ -17,10 +17,10 @@ def validate_injrepurl(filepath: str | PathLike, **kwargs) -> requests.Response:
     try:
         resp = requests.get(filepath, **kwargs)
         resp.raise_for_status()
-        print(f"Validated {filepath.split('/')[-1]}.")
+        print(f"Validated {filepath.split('/')[-1].rsplit('.', 1)[0]}.")
         return resp
     except requests.exceptions.RequestException as e_gen:
-        print(f"Failed validation - {filepath.split('/')[-1]}.")
+        print(f"Failed validation - {filepath.split('/')[-1].rsplit('.', 1)[0]}.")
         raise URLRetrievalError(filepath, e_gen)
 
 
