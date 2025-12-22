@@ -2,7 +2,7 @@ from os import PathLike
 from datetime import datetime
 from . import _constants, _parser
 from ._exceptions import URLRetrievalError
-from ._util import _gen_url, _gen_filepath
+from ._util import _gen_urls, _gen_filepath
 
 
 def get_reportdata(timestamp: datetime, local: bool = False, localdir: str | PathLike = None, return_df: bool = False,
@@ -40,15 +40,35 @@ def get_reportdata(timestamp: datetime, local: bool = False, localdir: str | Pat
                                                 cols_headpg=col_bounds)
         return df_result if return_df else df_result.to_json(orient='records', index=False, indent=2, force_ascii=False)
     else:
-        df_result = _parser.extract_injrepurl(gen_url(timestamp), area_headpg=area_bounds,
-                                              cols_headpg=col_bounds,
-                                              headers=headerparam)
-        return df_result if return_df else df_result.to_json(orient='records', index=False, indent=2, force_ascii=False)
+        last_error = None
+
+        for url in _gen_urls(timestamp):  # _gen_urls generates new + legacy formats
+            try:
+                df_result = _parser.extract_injrepurl(
+                    url,
+                    area_headpg=area_bounds,
+                    cols_headpg=col_bounds,
+                    headers=headerparam
+                )
+                return df_result if return_df else df_result.to_json(
+                    orient='records',
+                    index=False,
+                    indent=2,
+                    force_ascii=False
+                )
+            except Exception as e:
+                last_error = e
+                continue
+
+        # If all URLs fail, raise the last exception
+        raise last_error
 
 
 def check_reportvalid(timestamp: datetime, **kwargs) -> bool:
     """
-    Validate data availability of report at a specific date/time
+     Confirm the access/validity of the injury report URL at a specific date/time
+    :param timestamp:
+    :param kwargs: custom html headers in place of default ones
     """
     headerparam = kwargs.get('headers', _constants.requestheaders)
     try:
@@ -62,6 +82,8 @@ def check_reportvalid(timestamp: datetime, **kwargs) -> bool:
 
 def gen_url(timestamp: datetime) -> str:
     """
+    Generate the URL link of the injury report on server
+    :param timestamp: datetime of the injury report
     """
     return _gen_url(timestamp)
 

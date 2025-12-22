@@ -7,10 +7,33 @@ from . import _constants
 from ._exceptions import DataValidationError
 
 
-def _gen_url(timestamp: datetime) -> str:
-    URLstem_date = timestamp.date().strftime('%Y-%m-%d')
-    URLstem_time = (timestamp - timedelta(minutes=30)).time().strftime('%I%p')
-    return _constants.urlstem_injreppdf.replace('*', URLstem_date + '_' + URLstem_time)
+
+def _gen_urls(timestamp: datetime) -> list[str]:
+    urls = []
+    date_str = timestamp.strftime('%Y-%m-%d')
+
+    # -------- NEW FORMAT (15-min cadence) --------
+    minute = (timestamp.minute // 15) * 15
+    rounded_ts = timestamp.replace(minute=minute, second=0, microsecond=0)
+    time_new = rounded_ts.strftime('%I_%M%p')
+
+    urls.append(
+        _constants.urlstem_injreppdf.replace(
+            '*', f"{date_str}_{time_new}"
+        )
+    )
+
+    # -------- LEGACY FORMAT (hourly, no minutes) --------
+    legacy_ts = timestamp - timedelta(minutes=30)
+    time_legacy = legacy_ts.strftime('%I%p')
+
+    urls.append(
+        _constants.urlstem_injreppdf.replace(
+            '*', f"{date_str}_{time_legacy}"
+        )
+    )
+
+    return urls
 
 
 def _gen_filepath(timestamp: datetime, directorypath: str | PathLike) -> str:

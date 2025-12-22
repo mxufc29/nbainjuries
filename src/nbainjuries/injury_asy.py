@@ -2,7 +2,7 @@ from os import PathLike
 from datetime import datetime
 from . import _constants, _parser_asy
 from ._exceptions import URLRetrievalError
-from ._util import _gen_url, _gen_filepath
+from ._util import _gen_urls, _gen_filepath
 from aiohttp import ClientSession
 
 
@@ -54,7 +54,10 @@ async def get_reportdata(timestamp: datetime, session: ClientSession = None, loc
 
 async def check_reportvalid(timestamp: datetime, session: ClientSession = None, **kwargs) -> bool:
     """
-    Validate data availability of report at a specific date/time
+    Confirm the access/validity of the injury report URL at a specific date/time
+    :param timestamp:
+    :param session:
+    :param kwargs: custom html headers in place of default
     """
     headerparam = kwargs.get('headers', _constants.requestheaders)
     try:
@@ -72,12 +75,16 @@ async def check_reportvalid(timestamp: datetime, session: ClientSession = None, 
 
 def gen_url(timestamp: datetime) -> str:
     """
+    Generate the URL link of the injury report on server
+    :param timestamp: datetime of the injury report
     """
     return _gen_url(timestamp)
 
 
 def gen_filepath(timestamp: datetime, directorypath: str | PathLike) -> str:
     """
+    Generate the local path of the injury report consistent with default naming
+    :param timestamp:
     """
     return _gen_filepath(timestamp, directorypath)
 
