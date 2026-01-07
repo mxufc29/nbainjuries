@@ -30,12 +30,16 @@ async def get_reportdata(timestamp: datetime, session: ClientSession = None, loc
         'ploffend']:  # 23-24 season
         area_bounds = _constants.area_params2324
         col_bounds = _constants.cols_params2324
-    elif _constants.dictkeydts['2425']['regseastart'] <= timestamp:  # 24-25 season
+    elif _constants.dictkeydts['2425']['regseastart'] <= timestamp <= _constants.dictkeydts['2425'][
+        'ploffend']:  # 24-25 season
         area_bounds = _constants.area_params2425
         col_bounds = _constants.cols_params2425
-    else:  # out of range for covered seasons - default to 24-25 params
-        area_bounds = _constants.area_params2425
-        col_bounds = _constants.cols_params2425
+    elif _constants.dictkeydts['2526']['regseastart'] <= timestamp:  # 25-26 season
+        area_bounds = _constants.area_params2526
+        col_bounds = _constants.cols_params2526
+    else:  # out of range for covered seasons - default to 25-26 params
+        area_bounds = _constants.area_params2526
+        col_bounds = _constants.cols_params2526
 
     if local:
         df_result = await _parser_asy.extract_irlocal_async(_gen_filepath(timestamp, localdir), area_headpg=area_bounds,

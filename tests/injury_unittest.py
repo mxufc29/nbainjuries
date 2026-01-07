@@ -2,9 +2,10 @@ import unittest
 from datetime import datetime, timedelta
 import random
 import pandas as pd
-from nbainjuries.src import injury, _parser
-from nbainjuries.src import _constants
-from nbainjuries.src import DataValidationError, URLRetrievalError, LocalRetrievalError
+from nbainjuries import injury
+from nbainjuries import _constants, _parser
+from nbainjuries._util import _gen_url, _gen_filepath, _URL_FORMAT_CHANGE_DATE
+from nbainjuries._exceptions import DataValidationError, URLRetrievalError, LocalRetrievalError
 
 
 class getinjurydata_test(unittest.TestCase):
@@ -169,7 +170,141 @@ class validateheaders_test(unittest.TestCase):
             _parser._validate_headers(resultx)
 
 
+class genurl_test(unittest.TestCase):
+    """Tests for URL generation function covering old and new formats.
+    
+    URL format changed on 2025-12-22:
+    - Old format (before): Injury-Report_2024-01-15_05PM.pdf
+    - New format (after):  Injury-Report_2026-01-06_05_00PM.pdf
+    """
+
+    def test_old_format_structure(self):
+        """Test that old format URLs don't include minutes."""
+        ts = datetime(2024, 1, 15, 17, 0)  # 5:00 PM
+        url = _gen_url(ts)
+        self.assertIn('Injury-Report_2024-01-15_05PM.pdf', url)
+        self.assertNotIn('05_00PM', url)
+
+    def test_new_format_structure(self):
+        """Test that new format URLs include minutes with underscore."""
+        ts = datetime(2026, 1, 6, 17, 0)  # 5:00 PM
+        url = _gen_url(ts)
+        self.assertIn('Injury-Report_2026-01-06_05_00PM.pdf', url)
+
+    def test_transition_date_old(self):
+        """Test the last day using old format (2025-12-21)."""
+        ts = datetime(2025, 12, 21, 17, 0)
+        url = _gen_url(ts)
+        self.assertIn('_05PM.pdf', url)
+        self.assertNotIn('_05_00PM', url)
+
+    def test_transition_date_new(self):
+        """Test the first day using new format (2025-12-22)."""
+        ts = datetime(2025, 12, 22, 17, 0)
+        url = _gen_url(ts)
+        self.assertIn('_05_00PM.pdf', url)
+
+    def test_old_format_am_time(self):
+        """Test old format with AM time."""
+        ts = datetime(2024, 3, 10, 9, 0)  # 9:00 AM
+        url = _gen_url(ts)
+        self.assertIn('_09AM.pdf', url)
+
+    def test_old_format_pm_time(self):
+        """Test old format with PM time."""
+        ts = datetime(2024, 3, 10, 14, 0)  # 2:00 PM
+        url = _gen_url(ts)
+        self.assertIn('_02PM.pdf', url)
+
+    def test_old_format_noon(self):
+        """Test old format at noon."""
+        ts = datetime(2024, 3, 10, 12, 0)  # 12:00 PM
+        url = _gen_url(ts)
+        self.assertIn('_12PM.pdf', url)
+
+    def test_old_format_midnight(self):
+        """Test old format at midnight."""
+        ts = datetime(2024, 3, 10, 0, 0)  # 12:00 AM
+        url = _gen_url(ts)
+        self.assertIn('_12AM.pdf', url)
+
+    def test_new_format_with_minutes(self):
+        """Test new format with non-zero minutes."""
+        ts = datetime(2026, 1, 6, 17, 30)  # 5:30 PM
+        url = _gen_url(ts)
+        self.assertIn('_05_30PM.pdf', url)
+
+    def test_new_format_15_min_intervals(self):
+        """Test new format at 15-minute intervals (typical report times)."""
+        base = datetime(2026, 1, 6, 14, 0)
+        expected_times = ['02_00PM', '02_15PM', '02_30PM', '02_45PM']
+        for i, expected in enumerate(expected_times):
+            ts = base + timedelta(minutes=i*15)
+            url = _gen_url(ts)
+            self.assertIn(f'_{expected}.pdf', url, f"Failed for {ts}")
+
+    def test_new_format_am_time(self):
+        """Test new format with AM time."""
+        ts = datetime(2026, 1, 6, 9, 15)  # 9:15 AM
+        url = _gen_url(ts)
+        self.assertIn('_09_15AM.pdf', url)
+
+    def test_new_format_noon(self):
+        """Test new format at noon."""
+        ts = datetime(2026, 1, 6, 12, 0)  # 12:00 PM
+        url = _gen_url(ts)
+        self.assertIn('_12_00PM.pdf', url)
+
+    def test_new_format_midnight(self):
+        """Test new format at midnight."""
+        ts = datetime(2026, 1, 6, 0, 0)  # 12:00 AM
+        url = _gen_url(ts)
+        self.assertIn('_12_00AM.pdf', url)
+
+    def test_url_base_path(self):
+        """Test that URL uses correct base path."""
+        ts = datetime(2024, 1, 15, 17, 0)
+        url = _gen_url(ts)
+        self.assertTrue(url.startswith('https://ak-static.cms.nba.com/referee/injury/Injury-Report_'))
+
+    def test_gen_url_matches_injury_gen_url(self):
+        """Test that _gen_url and injury.gen_url produce same output."""
+        test_dates = [
+            datetime(2024, 1, 15, 17, 0),  # Old format
+            datetime(2025, 12, 21, 12, 0),  # Last day old format
+            datetime(2025, 12, 22, 12, 0),  # First day new format
+            datetime(2026, 1, 6, 17, 30),  # New format with minutes
+        ]
+        for ts in test_dates:
+            with self.subTest(ts=ts):
+                self.assertEqual(_gen_url(ts), injury.gen_url(ts))
+
+
+class genfilepath_test(unittest.TestCase):
+    """Tests for local filepath generation function."""
+
+    def test_old_format_filepath(self):
+        """Test filepath generation for old format dates."""
+        ts = datetime(2024, 1, 15, 17, 0)
+        filepath = _gen_filepath(ts, '/data/reports')
+        self.assertIn('Injury-Report_2024-01-15_05PM.pdf', filepath)
+
+    def test_new_format_filepath(self):
+        """Test filepath generation for new format dates."""
+        ts = datetime(2026, 1, 6, 17, 30)
+        filepath = _gen_filepath(ts, '/data/reports')
+        self.assertIn('Injury-Report_2026-01-06_05_30PM.pdf', filepath)
+
+    def test_filepath_includes_directory(self):
+        """Test that filepath includes the provided directory."""
+        ts = datetime(2024, 1, 15, 17, 0)
+        filepath = _gen_filepath(ts, '/my/custom/path')
+        self.assertTrue(filepath.startswith('/my/custom/path'))
+
+
 if __name__ == "__main__":
+    unittest.TextTestRunner().run(unittest.TestLoader().loadTestsFromTestCase(genurl_test))
+    unittest.TextTestRunner().run(unittest.TestLoader().loadTestsFromTestCase(genfilepath_test))
     unittest.TextTestRunner().run(unittest.TestLoader().loadTestsFromTestCase(getinjurydata_test))
     unittest.TextTestRunner().run(unittest.TestLoader().loadTestsFromTestCase(checkreportvalid_test))
 

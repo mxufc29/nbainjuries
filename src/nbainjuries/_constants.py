@@ -24,6 +24,8 @@ cols_params2324 = [108.82203265418997, 183.545096237564, 255.11084727516163, 371
                    655.0371030735015]
 area_params2425 = [76.30171985626221, 18.312425612640556, 534.1120389938354, 827.6368748466493]
 cols_params2425 = cols_params2324
+area_params2526 = area_params2425
+cols_params2526 = cols_params2425
 
 dictkeydts = {'2122': {'regseastart': datetime(2021, 10, 18, 0, 30),
   'regseaend': datetime(2022, 4, 10, 23, 30),
@@ -52,8 +54,16 @@ dictkeydts = {'2122': {'regseastart': datetime(2021, 10, 18, 0, 30),
  '2425': {'regseastart': datetime(2024, 10, 21, 0, 30),
   'regseaend': datetime(2025, 4, 13, 23, 30),
   'ploffstart': datetime(2025, 4, 18, 0, 30),
-  'ploffend': datetime(1, 1, 1, 0, 0),
+  'ploffend': datetime(2025, 6, 22, 23, 30),
   'plinstart': datetime(2025, 4, 14, 0, 30),
   'plinend': datetime(2025, 4, 18, 23, 30),
   'asbstart': datetime(2025, 2, 14, 0, 30),
-  'asbend': datetime(2025, 2, 18, 23, 30)}}
+  'asbend': datetime(2025, 2, 18, 23, 30)},
+ '2526': {'regseastart': datetime(2025, 10, 21, 0, 30),
+  'regseaend': datetime(2026, 4, 12, 23, 30),
+  'ploffstart': datetime(2026, 4, 17, 0, 30),
+  'ploffend': datetime(1, 1, 1, 0, 0),
+  'plinstart': datetime(2026, 4, 13, 0, 30),
+  'plinend': datetime(2026, 4, 17, 23, 30),
+  'asbstart': datetime(2026, 2, 13, 0, 30),
+  'asbend': datetime(2026, 2, 17, 23, 30)}}

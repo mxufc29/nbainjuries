@@ -1,5 +1,5 @@
 from os import path, PathLike
-from datetime import datetime, timedelta
+from datetime import datetime, date
 import re
 import pandas as pd
 import PyPDF2
@@ -7,15 +7,29 @@ from . import _constants
 from ._exceptions import DataValidationError
 
 
+# URL format changed on 2025-12-22
+_URL_FORMAT_CHANGE_DATE = date(2025, 12, 22)
+
+
 def _gen_url(timestamp: datetime) -> str:
     URLstem_date = timestamp.date().strftime('%Y-%m-%d')
-    URLstem_time = (timestamp - timedelta(minutes=30)).time().strftime('%I%p')
+    if timestamp.date() >= _URL_FORMAT_CHANGE_DATE:
+        # New format: Injury-Report_2026-01-06_05_00PM.pdf (includes minutes)
+        URLstem_time = timestamp.time().strftime('%I_%M%p')
+    else:
+        # Old format: Injury-Report_2024-01-15_05PM.pdf (no minutes)
+        URLstem_time = timestamp.time().strftime('%I%p')
     return _constants.urlstem_injreppdf.replace('*', URLstem_date + '_' + URLstem_time)
 
 
 def _gen_filepath(timestamp: datetime, directorypath: str | PathLike) -> str:
     URLstem_date = timestamp.date().strftime('%Y-%m-%d')
-    URLstem_time = (timestamp - timedelta(minutes=30)).time().strftime('%I%p')
+    if timestamp.date() >= _URL_FORMAT_CHANGE_DATE:
+        # New format: Injury-Report_2026-01-06_05_00PM.pdf (includes minutes)
+        URLstem_time = timestamp.time().strftime('%I_%M%p')
+    else:
+        # Old format: Injury-Report_2024-01-15_05PM.pdf (no minutes)
+        URLstem_time = timestamp.time().strftime('%I%p')
     filename = 'Injury-Report_' + URLstem_date + '_' + URLstem_time + '.pdf'
     injrep_dlpath = path.join(directorypath, filename)
     return injrep_dlpath
