@@ -34,10 +34,10 @@ async def get_reportdata(timestamp: datetime, session: ClientSession = None, loc
         'ploffend']:  # 24-25 season
         area_bounds = _constants.area_params2425
         col_bounds = _constants.cols_params2425
-    elif _constants.dictkeydts['2526']['regseastart'] <= timestamp:  # 25-26 season
+    elif _constants.dictkeydts['2526']['regseastart'] <= timestamp:
         area_bounds = _constants.area_params2526
         col_bounds = _constants.cols_params2526
-    else:  # out of range for covered seasons - default to 25-26 params
+    else:  # out of range - default to 25-26 params
         area_bounds = _constants.area_params2526
         col_bounds = _constants.cols_params2526
 

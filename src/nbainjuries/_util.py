@@ -1,5 +1,5 @@
 from os import path, PathLike
-from datetime import datetime, date
+from datetime import datetime
 import re
 import pandas as pd
 import PyPDF2
@@ -7,29 +7,37 @@ from . import _constants
 from ._exceptions import DataValidationError
 
 
-# URL format changed on 2025-12-22
-_URL_FORMAT_CHANGE_DATE = date(2025, 12, 22)
+# URL format boundaries due to policy change in reporting
+_DT_LEGACYFMT1 = datetime(2025, 12, 19, 15, 30)  # legacy 1 inclusive
+_DT_LEGACYFMT2 = datetime(2025, 12, 19, 16, 45)  # legacy 2 inclusive
+_DT_NEWFMT15M = datetime(2025, 12, 22, 9, 0)  # new inclusive
+_STRF_LEGACY = '%I%p'
+_STRF_NEW = '%I_%M%p'
 
 
 def _gen_url(timestamp: datetime) -> str:
     URLstem_date = timestamp.date().strftime('%Y-%m-%d')
-    if timestamp.date() >= _URL_FORMAT_CHANGE_DATE:
-        # New format: Injury-Report_2026-01-06_05_00PM.pdf (includes minutes)
-        URLstem_time = timestamp.time().strftime('%I_%M%p')
-    else:
-        # Old format: Injury-Report_2024-01-15_05PM.pdf (no minutes)
-        URLstem_time = timestamp.time().strftime('%I%p')
+    if timestamp <= _DT_LEGACYFMT1:
+        URLstem_time = (timestamp.replace(minute=0)).time().strftime(_STRF_LEGACY)
+    elif _DT_LEGACYFMT2 <= timestamp < _DT_NEWFMT15M:
+        URLstem_time = (timestamp.replace(minute=0)).time().strftime(_STRF_LEGACY)
+    elif timestamp >= _DT_NEWFMT15M:
+        URLstem_time = timestamp.time().strftime(_STRF_NEW)
+    else:  # gap btn the _DT_LEGACYFMT1/_DT_LEGACYFMT2
+        raise ValueError(f"Invalid Report Time {timestamp} entered.")
     return _constants.urlstem_injreppdf.replace('*', URLstem_date + '_' + URLstem_time)
 
 
 def _gen_filepath(timestamp: datetime, directorypath: str | PathLike) -> str:
     URLstem_date = timestamp.date().strftime('%Y-%m-%d')
-    if timestamp.date() >= _URL_FORMAT_CHANGE_DATE:
-        # New format: Injury-Report_2026-01-06_05_00PM.pdf (includes minutes)
-        URLstem_time = timestamp.time().strftime('%I_%M%p')
-    else:
-        # Old format: Injury-Report_2024-01-15_05PM.pdf (no minutes)
-        URLstem_time = timestamp.time().strftime('%I%p')
+    if timestamp <= _DT_LEGACYFMT1:
+        URLstem_time = (timestamp.replace(minute=0)).time().strftime(_STRF_LEGACY)
+    elif _DT_LEGACYFMT2 <= timestamp < _DT_NEWFMT15M:
+        URLstem_time = (timestamp.replace(minute=0)).time().strftime(_STRF_LEGACY)
+    elif timestamp >= _DT_NEWFMT15M:
+        URLstem_time = timestamp.time().strftime(_STRF_NEW)
+    else:  # cover gap btn the _DT_LEGACYFMT1/_DT_LEGACYFMT2
+        raise ValueError(f"Invalid timestamp {timestamp} entered.")
     filename = 'Injury-Report_' + URLstem_date + '_' + URLstem_time + '.pdf'
     injrep_dlpath = path.join(directorypath, filename)
     return injrep_dlpath

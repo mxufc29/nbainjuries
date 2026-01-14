@@ -3,19 +3,18 @@ from datetime import datetime
 # Default http headers
 requestheaders = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                                 'Chrome/120.0.0.0 Safari/537.36'}
-# URL stem
 urlstem_injreppdf = 'https://ak-static.cms.nba.com/referee/injury/Injury-Report_*.pdf'
 
 expected_cols = ['Game Date', 'Game Time', 'Matchup', 'Team', 'Player Name', 'Current Status', 'Reason']
 
-# Set the Dimensions for Area and Columns for Extraction, derived from Tabula
-# format area params is [top (y1), left(x1), bottom (y1+height), right (x1+width)]
-# format column params is [x2_a (first col, second x coordinate), x1_b, x2_b. x1_c, ...]
+# Set the tabula dimensions for area and columns
+# area params [top (y1), left(x1), bottom (y1+height), right (x1+width)]
+# column params [x2_a (first col, second x coordinate), x1_b, x2_b, x1_c, ...]
 
 area_params2223_a = [34.99559288024902, -0.9998814239502193, 566.508092880249, 843.1051185760498]
 cols_params2223_a = [83.5684935760498, 157.24349357604981, 230.9184935760498, 360.3759935760498, 483.5184935760498,
                      590.8734935760498]
-# use after Injury-Report_2023-05-02_05PM, for rest of the 22-23 season
+# after Injury-Report_2023-05-02_05PM, for remainder of 22-23
 area_params2223_b = [73.14440731048583, 1.7891566230775788, 530.9547264480591, 841.6342937995912]
 cols_params2223_b = [113.34753324050922, 190.17547185440083, 259.6363478614809, 415.39710011978167, 576.4200399543764,
                      658.5101661445619]
@@ -59,11 +58,12 @@ dictkeydts = {'2122': {'regseastart': datetime(2021, 10, 18, 0, 30),
   'plinend': datetime(2025, 4, 18, 23, 30),
   'asbstart': datetime(2025, 2, 14, 0, 30),
   'asbend': datetime(2025, 2, 18, 23, 30)},
- '2526': {'regseastart': datetime(2025, 10, 21, 0, 30),
+  '2526': {'regseastart': datetime(2025, 10, 20, 0, 30),
   'regseaend': datetime(2026, 4, 12, 23, 30),
   'ploffstart': datetime(2026, 4, 17, 0, 30),
   'ploffend': datetime(1, 1, 1, 0, 0),
   'plinstart': datetime(2026, 4, 13, 0, 30),
   'plinend': datetime(2026, 4, 17, 23, 30),
   'asbstart': datetime(2026, 2, 13, 0, 30),
-  'asbend': datetime(2026, 2, 17, 23, 30)}}
+  'asbend': datetime(2026, 2, 17, 23, 30)}
+}
