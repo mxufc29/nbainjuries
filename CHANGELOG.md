@@ -2,6 +2,17 @@
 
 Log of major changes, based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-01-23
+
+## Added
+- Updates to datetimes and constant params relevant to 24-25 and 25-26 seasons
+- Refactored logic to adjust for change in reporting cadence/format as of 2025-12-22 (@airhorns co-contributing)
+- Additional unit testing for new report formats
+- Basic actions workflows (ci, publish-pypi)
+
+## Changed
+- Miscellaneous edits to README, docstrings, error handling, and commenting to improve overall clarity
+
 ## [1.0.0] - 2025-08-04
 
 ### Added

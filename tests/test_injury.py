@@ -1,3 +1,4 @@
+import os
 import unittest
 from datetime import datetime, timedelta
 import random
@@ -33,6 +34,7 @@ class getinjurydata_test(unittest.TestCase):
         with self.assertRaises(URLRetrievalError):
             result = injury.get_reportdata(ts_test)
 
+    @unittest.skipIf(os.environ.get("CI").lower() == "true", "CI skip")
     def test_randomlocalvalid(self):
         while True:
             ts_start = _constants.dictkeydts['2324']['regseastart']
@@ -53,6 +55,7 @@ class getinjurydata_test(unittest.TestCase):
             except LocalRetrievalError as LRerror:
                 print(f"Regenerate datetime due to {LRerror}.")
 
+    @unittest.skipIf(os.environ.get("CI").lower() == "true", "CI skip")
     def test_localinvalid(self):
         ts_test = datetime.now().replace(second=0, microsecond=0)
         print(f"Timestamp - {ts_test}")
@@ -63,6 +66,7 @@ class getinjurydata_test(unittest.TestCase):
         # self.assertIsInstance(result, pd.DataFrame)
         # self.assertFalse(result.empty)
 
+    @unittest.skipIf(os.environ.get("CI").lower() == "true", "CI skip")
     def test_headersedgecase(self):
         ts_test = datetime.now().replace(minute=30, second=0, microsecond=0) - timedelta(days=30)
         custom_headers = {
@@ -146,6 +150,7 @@ class checkreportvalid_test(unittest.TestCase):
         self.assertEqual(result, False)
 
 
+@unittest.skipIf(os.environ.get("CI").lower() == "true", "CI skip")
 class validateheaders_test(unittest.TestCase):
     def test_headersvalid(self):
         ts_start = _constants.dictkeydts['2122']['regseastart']

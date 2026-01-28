@@ -9,7 +9,7 @@ class URLRetrievalError(InjuryReportError):
         super().__init__()
 
     def __str__(self):
-        return f"Failed to access the source file at {self.url}: {self.reason}"
+        return f"Failed to access src data: {self.reason}"
 
 
 class LocalRetrievalError(InjuryReportError, FileNotFoundError):
@@ -19,11 +19,8 @@ class LocalRetrievalError(InjuryReportError, FileNotFoundError):
         super().__init__()
 
     def __str__(self):
-        return f"Cannot access local file at {self.filepath}: {self.reason}"
+        return f"Failed to access local src data: {self.reason}"
 
 
 class DataValidationError(InjuryReportError):
     pass
-
-
-

@@ -10,12 +10,12 @@ async def get_reportdata(timestamp: datetime, session: ClientSession = None, loc
                          return_df: bool = False, **kwargs):
     """
     Extract injury data from the injury report at a specific date/time
-    :param timestamp: datetime object of the report for retrieval
+    :param timestamp: datetime of the report for retrieval
     :param session:
-    :param local: if source to retreive saved locally; default to False (retrieve from url)
+    :param local: if source data saved locally; default to False (retrieve live)
     :param localdir: local directory path of source, needed if local = True
     :param return_df: return output as dataframe
-    :param kwargs: custom html headers in place of default ones
+    :param kwargs: custom headers to replace default
     """
     if not local:
         headerparam = kwargs.get('headers', _constants.requestheaders)

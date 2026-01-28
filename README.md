@@ -12,6 +12,8 @@ A package for retrieving historical and real-time NBA player injury data in a st
 
 - [Examples / Usage](#examples--usage)
 
+- [License](#license)
+
 - [Contributing](#contributing)
 
 ## Description
@@ -26,8 +28,7 @@ The NBA’s official guidelines on injury tracking and reporting for teams state
 
     (c) For the second game of a back-to-back, teams must report the above information by 1 p.m. local time on the day of the game.
 
-Official player injury data are submitted by team medical staff pursuant to above guidelines, and are stored statically on the NBA’s server, organized in hourly snapshots across each day of the regular season and postseason. Historical data in this
-format have been available since the 2021-2022 NBA season. Data are not available for preseason games, and are not available at certain times/dates, for instance during stretches of the calendar in which no games occur (e.g. all star break, postseasonas well as other periodic gaps in data availability.
+Official player injury data are submitted by team medical staff pursuant to above guidelines, and are stored statically on the NBA’s server, organized in hourly or 15-minute snapshots across each day of the regular season and postseason. Historical data in this format have been available since the 2021-2022 NBA season. Data are not available for preseason games, and are not available at certain times/dates, for instance during stretches of the calendar in which no games occur (e.g. all star break, postseason) as well as other periodic gaps in data availability.
 
 This package was conceived and formulated as a tool for systematically retrieving, extracting, and transforming the data in these static reports. It is intended to be versatile in its usage, and can serve as part of both a potential ETL pipeline for storage/analysis and an API-style interface for querying up-to date injury information in quasi real-time settings.
 
@@ -42,8 +43,6 @@ This package was conceived and formulated as a tool for systematically retrievin
   - [Instructions](https://www.baeldung.com/java-home-on-windows-mac-os-x-linux) on adding Java to system PATH variable
   
   - To verify Java is successfully configured, ensure that execution of “java -version” in your system’s shell returns information about the java version (no errors or command not found messages).
-  
-  - For additional information/troubleshooting in Java, please reference the [tabula-py getting started page](https://tabula-py.readthedocs.io/en/latest/getting_started.html#requirements)
 
 `nbainjuries` is available on PyPI. To install via pip, run `pip install nbainjuries`.
 
@@ -128,15 +127,19 @@ df_output = injury.get_reportdata(datetime(year=2025, month=4, day=25, hour=17, 
 
 Let's say one wants to retrieve and consolidate all injury report data for the entire 2023-2024 NBA regular season, or obtain the data from a random sample of 100 injury reports from the 2023-2024 NBA regular season. For improved processing speed, instead of the `injury` module, use the `injury_asy` module in addition to `asyncio` to enable concurrent (batch) processing of reports.
 
+## License
+
+The nbainjuries package is released under the [MIT license](https://github.com/mxufc29/nbainjuries/blob/main/LICENSE). Please also respect the NBA's [Terms of Use](https://www.nba.com/termsofuse) for its digital and online content. 
+
 ## Contributing
 
-I welcome any suggestions or feedback; please feel free to submit [comments](https://github.com/mxufc29/nbainjuries/issues) and/or [pull requests](https://github.com/mxufc29/nbainjuries/pulls) on GitHub. 
+I welcome any suggestions or feedback; please feel free to submit [comments/issues](https://github.com/mxufc29/nbainjuries/issues) and/or [pull requests](https://github.com/mxufc29/nbainjuries/pulls) on GitHub. To maximize success in resolving issues, please include code snippets, detailed environment info, and specific reproducible steps. 
 
-I am also actively looking for collaborators to explore and potentially pursue some additional analytics projects regarding NBA injuries; some preliminary avenues include:
+I am also actively looking for collaborators to pursue some additional analytics work regarding NBA injuries; some avenues currently include:
 
 (a) expanding data coverage to include seasons before 2021-2022,
 
-(b) developing a centralized database solution to store these data
+(b) developing a centralized cloud database to store these and similar data
 
 (c) classifying/dashboarding season-level injury trends
 

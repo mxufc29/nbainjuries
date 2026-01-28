@@ -22,10 +22,10 @@ _jvm_lock = threading.Lock()
 
 async def validate_irurl_async(filepath: str | PathLike, session: ClientSession, **kwargs):
     """
-    :param filepath: url of report (nba.com domain)
+    :param filepath: url of report
     :param session:
-    :param kwargs: any headers
-    :return: response object report (if validation succeeds)
+    :param kwargs: custom headers
+    :return: response object (if validation succeeds)
     """
     try:
         async with session.get(filepath, **kwargs) as resp:
@@ -55,13 +55,13 @@ async def extract_irurl_async(filepath: str | PathLike, session: ClientSession, 
                       area_otherpgs: list | None = None, cols_otherpgs: list | None = None,
                       **kwargs) -> pd.DataFrame:
     """
-    :param filepath: url of report (nba.com domain)
+    :param filepath: url of report
     :param session:
     :param area_headpg: area boundaries of first pg of pdf
     :param cols_headpg: column boundaries of first pg of pdf
     :param area_otherpgs: area boundaries of other pgs of pdf if needed
     :param cols_otherpgs: column boundaries of other pgs of pdf if needed
-    :param kwargs: any headers
+    :param kwargs: custom headers
     :return:
     """
     pdf_content = await validate_irurl_async(filepath, session, **kwargs)
@@ -78,7 +78,7 @@ async def extract_irurl_async(filepath: str | PathLike, session: ClientSession, 
                                  columns=cols_headpg, pages=1)
     _validate_headers(dfs_headpg[0])
     # Following pgs
-    dfs_otherpgs = []  # default to empty list if only single pg
+    dfs_otherpgs = []  # default to empty if single pg
     if pdf_numpgs >= 2:
         dfs_otherpgs = await asyncio.to_thread(_read_pdfjvmwrap, filepath, stream=True, area=area_otherpgs,
                                        columns=cols_otherpgs, pages='2-' + str(pdf_numpgs), pandas_options={'header': None})
@@ -109,13 +109,13 @@ async def extract_irlocal_async(filepath: str | PathLike, area_headpg: list, col
                                  columns=cols_headpg, pages=1)
     _validate_headers(dfs_headpg[0])
     # Following pgs
-    dfs_otherpgs = []  # default to empty list if only single pg
+    dfs_otherpgs = []  # default to empty if single pg
     if pdf_numpgs >= 2:
         dfs_otherpgs = await asyncio.to_thread(_read_pdfjvmwrap, filepath, stream=True, area=area_otherpgs,
                                        columns=cols_otherpgs, pages='2-' + str(pdf_numpgs), pandas_options={'header': None})
         # default setting - pandas_options={'header': 'infer'} has been overridden with pandas_options={'header': None}
         # Check first row contents; no headers present --> good, headers present --> drop and set headers manually
-    # Process and clean data
+    # Processing
     df_rawdata = __concat_injreppgs(dflist_headpg=dfs_headpg, dflist_otherpgs=dfs_otherpgs)
     df_cleandata = __clean_injrep(df_rawdata)
     return df_cleandata

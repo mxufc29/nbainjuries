@@ -1,13 +1,13 @@
 from datetime import datetime
 
-# Default http headers
+# Default headers
 requestheaders = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
                                 'Chrome/120.0.0.0 Safari/537.36'}
 urlstem_injreppdf = 'https://ak-static.cms.nba.com/referee/injury/Injury-Report_*.pdf'
 
 expected_cols = ['Game Date', 'Game Time', 'Matchup', 'Team', 'Player Name', 'Current Status', 'Reason']
 
-# Set the tabula dimensions for area and columns
+# tabula dimensions for area and columns
 # area params [top (y1), left(x1), bottom (y1+height), right (x1+width)]
 # column params [x2_a (first col, second x coordinate), x1_b, x2_b, x1_c, ...]
 
