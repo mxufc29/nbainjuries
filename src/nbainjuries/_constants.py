@@ -2,7 +2,7 @@ from datetime import datetime
 
 # Default headers
 requestheaders = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                                'Chrome/120.0.0.0 Safari/537.36'}
+                                'Chrome/144.0.7559.132 Safari/537.36'}
 urlstem_injreppdf = 'https://ak-static.cms.nba.com/referee/injury/Injury-Report_*.pdf'
 
 expected_cols = ['Game Date', 'Game Time', 'Matchup', 'Team', 'Player Name', 'Current Status', 'Reason']

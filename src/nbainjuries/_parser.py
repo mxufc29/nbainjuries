@@ -6,6 +6,7 @@ from io import BytesIO
 import requests
 from ._exceptions import URLRetrievalError, LocalRetrievalError
 from ._util import __concat_injreppgs, _validate_headers, _pagect_localpdf, __clean_injrep
+from ._constants import requestheaders
 
 
 def validate_injrepurl(filepath: str | PathLike, **kwargs) -> requests.Response:
@@ -46,13 +47,13 @@ def extract_injrepurl(filepath: str | PathLike, area_headpg: list, cols_headpg: 
         cols_otherpgs = cols_headpg
 
     # First pg
-    dfs_headpg = tabula.read_pdf(filepath, stream=True, area=area_headpg,
+    dfs_headpg = tabula.read_pdf(filepath, stream=True, user_agent=requestheaders['User-Agent'], area=area_headpg,
                                  columns=cols_headpg, pages=1)
     _validate_headers(dfs_headpg[0])
     # Following pgs
     dfs_otherpgs = []  # default to empty if single pg
     if pdf_numpgs >= 2:
-        dfs_otherpgs = tabula.read_pdf(filepath, stream=True, area=area_otherpgs,
+        dfs_otherpgs = tabula.read_pdf(filepath, stream=True, user_agent=requestheaders['User-Agent'], area=area_otherpgs,
                                        columns=cols_otherpgs, pages='2-' + str(pdf_numpgs),
                                        pandas_options={'header': None})
         # default to pandas_options={'header': 'infer'}

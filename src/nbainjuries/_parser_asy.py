@@ -4,6 +4,7 @@ import PyPDF2
 from io import BytesIO
 from ._exceptions import URLRetrievalError, LocalRetrievalError
 from ._util import __concat_injreppgs, _validate_headers, _pagect_localpdf, __clean_injrep
+from ._constants import requestheaders
 import asyncio
 import aiohttp
 from aiohttp import ClientSession
@@ -74,14 +75,15 @@ async def extract_irurl_async(filepath: str | PathLike, session: ClientSession, 
         cols_otherpgs = cols_headpg
 
     # First pg
-    dfs_headpg = await asyncio.to_thread(_read_pdfjvmwrap, filepath, stream=True, area=area_headpg,
-                                 columns=cols_headpg, pages=1)
+    dfs_headpg = await asyncio.to_thread(_read_pdfjvmwrap, filepath, stream=True, user_agent=requestheaders['User-Agent'],
+                                         area=area_headpg, columns=cols_headpg, pages=1)
     _validate_headers(dfs_headpg[0])
     # Following pgs
     dfs_otherpgs = []  # default to empty if single pg
     if pdf_numpgs >= 2:
-        dfs_otherpgs = await asyncio.to_thread(_read_pdfjvmwrap, filepath, stream=True, area=area_otherpgs,
-                                       columns=cols_otherpgs, pages='2-' + str(pdf_numpgs), pandas_options={'header': None})
+        dfs_otherpgs = await asyncio.to_thread(_read_pdfjvmwrap, filepath, stream=True, user_agent=requestheaders['User-Agent'],
+                                               area=area_otherpgs, columns=cols_otherpgs, pages='2-' + str(pdf_numpgs),
+                                               pandas_options={'header': None})
         # default to pandas_options={'header': 'infer'}
         # Override with pandas_options={'header': None}; manually drop included headers if necessary
     # Processing
