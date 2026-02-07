@@ -2,6 +2,21 @@
 
 Log of major changes, based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [1.1.1] - 2026-02-05
+
+## Added
+- User-agent argument in tabula calls to fix/stabilize direct URL file requests
+- Bug.yml issue template
+
+## Changed
+- Miscellaneous cosmetic edits to docs
+- Update to request header constant param
+
+## Removed
+- tests/injuryasy_example.py script
+
+
 ## [1.1.0] - 2026-01-23
 
 ## Added

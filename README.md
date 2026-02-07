@@ -38,11 +38,11 @@ This package was conceived and formulated as a tool for systematically retrievin
 
 - **Python 3.10+**
 
-- **Java** - `nbainjuries` utilizes the tabula-py module for data processing, which requires a Java Runtime (JRE) or Development Kit (JDK) version 8 or higher. Ensure you have an appropriate version of [Java installed](https://www.java.com/en/download/manual.jsp) and that that running `java` from your system's terminal works (i.e., the `java` command is available in your system’s PATH).
+- **Java** - `nbainjuries` utilizes the tabula-py module for data processing, which requires a [Java Runtime (JRE)](https://www.java.com/en/download/manual.jsp) or [Java Development Kit (JDK)](https://www.oracle.com/java/technologies/downloads/), Java 8 or higher. Ensure you have an appropriate version of Java installed and that that running `java` from your system's terminal works (i.e. the `java` command is available in your system’s PATH).
   
   - [Instructions](https://www.baeldung.com/java-home-on-windows-mac-os-x-linux) on adding Java to system PATH variable
   
-  - To verify Java is successfully configured, ensure that execution of “java -version” in your system’s shell returns information about the java version (no errors or command not found messages).
+  - To verify Java is successfully configured, ensure that execution of “java -version” in your system’s shell returns information about the java version (no errors).
 
 `nbainjuries` is available on PyPI. To install via pip, run `pip install nbainjuries`.
 
@@ -133,11 +133,11 @@ The nbainjuries package is released under the [MIT license](https://github.com/m
 
 ## Contributing
 
-I welcome any suggestions or feedback; please feel free to submit [comments/issues](https://github.com/mxufc29/nbainjuries/issues) and/or [pull requests](https://github.com/mxufc29/nbainjuries/pulls) on GitHub. To maximize success in resolving issues, please include code snippets, detailed environment info, and specific reproducible steps. 
+I welcome any suggestions or feedback; please feel free to submit [comments/issues](https://github.com/mxufc29/nbainjuries/issues) and/or [pull requests](https://github.com/mxufc29/nbainjuries/pulls) on GitHub. To maximize efficiency in resolving issues and reduce back-and-forth clarification cycles, please include code snippets, detailed environment info, and specific reproducible$ $ steps. 
 
-I am also actively looking for collaborators to pursue some additional analytics work regarding NBA injuries; some avenues currently include:
+I am also looking for collaborators to pursue some additional analytics work regarding NBA injuries; some avenues currently include:
 
-(a) expanding data coverage to include seasons before 2021-2022,
+(a) expanding data coverage to include seasons before 2021-2022, and integrating into the existing library scope
 
 (b) developing a centralized cloud database to store these and similar data
 

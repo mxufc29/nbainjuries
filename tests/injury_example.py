@@ -27,10 +27,12 @@ def gen_randomdt(startdt, enddt, exclude_list: list[tuple[datetime, datetime]] =
     return random.choice(dtpool)
 
 
-if __name__ == "__main__":
-    # # output_test = injury.get_reportdata(round_prev30min(datetime.now()))
-    # print(output_test)
-    # URL
+def recent_example():
+    output_test = injury.get_reportdata(round_prev30min(datetime.now()))
+    print(output_test)
+
+
+def liverandom_example():
     df_test = injury.get_reportdata(gen_randomdt(startdt=datetime(2024, 10, 21, 0, 30),
                                                  enddt=datetime(2025, 4, 13, 23, 30),
                                                  exclude_list=[(datetime(2025, 2, 14, 0, 30),
@@ -40,20 +42,28 @@ if __name__ == "__main__":
                                                    enddt=datetime(2025, 4, 13, 23, 30),
                                                    exclude_list=[(datetime(2025, 2, 14, 0, 30),
                                                                   datetime(2025, 2, 18, 23, 30))]))
-    # LOCAL
+    return df_test, dict_test
+
+
+def localrandom_example():
     DATA_DIR = ('C:/Users/Michael Xu/Desktop/Sports Analytics/Projects/Data/Downloads/NBAOfficialInjReports/2023-2024'
                 '/regseas23-24')
     dt_testl1 = gen_randomdt(startdt=datetime(2023, 10, 24, 17, 30),
-                                                      enddt=datetime(2024, 4, 14, 23, 30),
-                                                      exclude_list=[(datetime(2024, 2, 16, 0, 30),
-                                                                     datetime(2024, 2, 20, 23, 30))])
+                             enddt=datetime(2024, 4, 14, 23, 30),
+                             exclude_list=[(datetime(2024, 2, 16, 0, 30),
+                                            datetime(2024, 2, 20, 23, 30))])
     df_testlocal = injury.get_reportdata(dt_testl1, local=True, localdir=DATA_DIR, return_df=True)
-    print(dt_testl1)
+    print(f"Selected {dt_testl1}")
     dt_testl2 = gen_randomdt(startdt=datetime(2023, 10, 24, 17, 30),
                              enddt=datetime(2024, 4, 14, 23, 30),
                              exclude_list=[(datetime(2024, 2, 16, 0, 30),
                                             datetime(2024, 2, 20, 23, 30))])
     dict_testlocal = injury.get_reportdata(dt_testl2, local=True, localdir=DATA_DIR)
-    print(dt_testl2)
+    print(f"Selected {dt_testl2}")
+    return df_testlocal, dict_testlocal
 
 
+if __name__ == "__main__":
+    recent_example()
+    df_live, dict_live = liverandom_example()
+    df_local, dict_local = localrandom_example()
