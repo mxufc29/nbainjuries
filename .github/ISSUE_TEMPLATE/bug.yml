@@ -1,0 +1,48 @@
+name: Bug report
+description: Report something that’s not working as expected.
+title: ""
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened? Bullets preferred.
+    validations:
+      required: true
+
+  - type: textarea
+    id: env
+    attributes:
+      label: Environment
+      description: What's your setup?
+      placeholder: |
+        Python version:
+        nbainjuries version:
+        OS: 
+        Java installed (Y/N):
+        Java version:
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Paste the code snippets or commands to reproduce.
+      render: python
+      placeholder: |
+        # paste code snippet
+    validations:
+      required: true
+
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Traceback
+      description: Traceback or error logs if helpful.
+      render: shell
+    validations:
+      required: false
+

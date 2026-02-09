@@ -26,8 +26,8 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-interaction
 
-      # - name: Run tests
-      # run: python -m unittest discover -s tests -p "test_*.py"
+      - name: Run tests
+        run: python -m unittest discover -s tests -p "test_*.py"
       
       - name: Build package
         run: poetry build
