@@ -1,6 +1,6 @@
 name: Bug report
 description: Report something that’s not working as expected.
-title: ""
+title: "[Bug/Issue] "
 labels: ["bug"]
 body:
   - type: textarea
