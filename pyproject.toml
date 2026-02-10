@@ -5,7 +5,7 @@ build-backend = "poetry.core.masonry.api"
 
 [project]
 name = "nbainjuries"
-version = "1.1.0"
+version = "1.1.1"
 description = "Library for accessing and extracting NBA player injury data from official team injury reports."
 readme = "README.md"
 requires-python = ">=3.10,<4.0"

@@ -15,6 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
@@ -22,6 +25,18 @@ jobs:
 
       - name: Install Poetry
         run: pip install poetry
+
+      - name: Verify release tag matches Poetry version (safeguard)
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          TAG="${TAG#v}"
+          VER="$(poetry version -s)"
+          echo "release tag: ${TAG}"
+          echo "poetry version: ${VER}"
+          if [ "$TAG" != "$VER" ]; then
+            echo "::error::Release tag ($TAG) does not match Poetry version ($VER). Fix pyproject.toml or retag the correct commit."
+            exit 1
+          fi
 
       - name: Install dependencies
         run: poetry install --no-interaction
