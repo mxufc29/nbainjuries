@@ -1,20 +1,23 @@
 import os
+import random
 import unittest
 from datetime import datetime, timedelta
-import random
+
 import pandas as pd
 from nbainjuries import injury, _parser, _constants
-from nbainjuries._util import _gen_url, _gen_filepath, _DT_LEGACYFMT1, _DT_LEGACYFMT2
 from nbainjuries._exceptions import DataValidationError, URLRetrievalError, LocalRetrievalError
+from nbainjuries._util import _gen_url, _gen_filepath, _DT_LEGACYFMT1, _DT_LEGACYFMT2
 
 
 class getinjurydata_test(unittest.TestCase):
     def setUp(self):
-        self.DATA_DIR = ('C:/Users/Michael Xu/Desktop/Sports Analytics/Projects/Data/Downloads/NBAOfficialInjReports/'
-                         '2023-2024/regseas23-24')
+        self.DATA_DIR = (
+            "C:/Users/Michael Xu/Desktop/Sports Analytics/Projects/Data/Downloads/NBAOfficialInjReports/"
+            "2023-2024/regseas23-24"
+        )
 
     def test_randomurl(self):
-        ts_start = _constants.dictkeydts['2122']['regseastart']
+        ts_start = _constants.dictkeydts["2122"]["regseastart"]
         ts_end = datetime(2021, 12, 31, 23, 30)
         hrs = int((ts_end - ts_start).total_seconds() / 3600)
         random.seed(42)
@@ -29,7 +32,7 @@ class getinjurydata_test(unittest.TestCase):
                 self.assertIn(colx, _constants.expected_cols)
 
     def test_urlinvalid(self):
-        ts_test = _constants.dictkeydts['2223']['asbstart'] + timedelta(hours=10)
+        ts_test = _constants.dictkeydts["2223"]["asbstart"] + timedelta(hours=10)
         print(f"Timestamp - {ts_test}")
         with self.assertRaises(URLRetrievalError):
             result = injury.get_reportdata(ts_test)
@@ -37,8 +40,8 @@ class getinjurydata_test(unittest.TestCase):
     @unittest.skipIf(os.environ.get("CI", "").lower() == "true", "CI skip")
     def test_randomlocalvalid(self):
         while True:
-            ts_start = _constants.dictkeydts['2324']['regseastart']
-            ts_end = _constants.dictkeydts['2324']['regseaend']
+            ts_start = _constants.dictkeydts["2324"]["regseastart"]
+            ts_end = _constants.dictkeydts["2324"]["regseaend"]
             hrs = int((ts_end - ts_start).total_seconds() / 3600)
             random.seed(29)
             ts_test = ts_start + timedelta(hours=random.randint(0, hrs))
@@ -66,7 +69,7 @@ class getinjurydata_test(unittest.TestCase):
         # self.assertIsInstance(result, pd.DataFrame)
         # self.assertFalse(result.empty)
 
-    @unittest.skip('Header edge case getting blocked; needs refactor or omit')
+    @unittest.skip("Header edge case getting blocked; needs refactor or omit")
     def test_headersedgecase(self):
         ts_test = datetime.now().replace(minute=30, second=0, microsecond=0) - timedelta(days=30)
         custom_headers = {
@@ -104,7 +107,7 @@ class checkreportvalid_test(unittest.TestCase):
     def test_random(self):
         ts_start = datetime(2022, 10, 17, 0, 30)
         ts_end = datetime(2023, 6, 12, 23, 30)
-        hrs = int((ts_end - ts_start).total_seconds()/3600)
+        hrs = int((ts_end - ts_start).total_seconds() / 3600)
         random.seed(42)
         ts_test = ts_start + timedelta(hours=random.randint(0, hrs))
         result = injury.check_reportvalid(ts_test)
@@ -125,26 +128,31 @@ class checkreportvalid_test(unittest.TestCase):
 
     def test_valid(self):
         random.seed(29)
-        ts_test = _constants.dictkeydts['2324']['regseastart'] + timedelta(hours=random.randint(0, 730))
+        ts_test = _constants.dictkeydts["2324"]["regseastart"] + timedelta(hours=random.randint(0, 730))
         result = injury.check_reportvalid(ts_test)
         print(f"Timestamp - {ts_test}")
         self.assertEqual(result, True)
 
     def test_headers(self):
         random.seed(100)
-        ts_test = _constants.dictkeydts['2324']['regseastart'] + timedelta(hours=random.randint(0, 730))
-        result = injury.check_reportvalid(ts_test, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
-                                                            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
-                                                            "Accept-Language": "en-US,en;q=0.9",
-                                                            "Accept-Encoding": "gzip, deflate, br",
-                                                            "Connection": "keep-alive",
-                                                            "Upgrade-Insecure-Requests": "1"})
+        ts_test = _constants.dictkeydts["2324"]["regseastart"] + timedelta(hours=random.randint(0, 730))
+        result = injury.check_reportvalid(
+            ts_test,
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+                "Accept-Language": "en-US,en;q=0.9",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Connection": "keep-alive",
+                "Upgrade-Insecure-Requests": "1",
+            },
+        )
         print(f"Timestamp - {ts_test}")
         self.assertEqual(result, True)
 
     def test_headersinvalid(self):
         ts_test = datetime.now().replace(minute=30, second=0, microsecond=0) - timedelta(days=15)
-        fail_customheaders = {'xyz'}
+        fail_customheaders = {"xyz"}
         result = injury.check_reportvalid(ts_test, headers=fail_customheaders)
         print(f"Timestamp - {ts_test}")
         self.assertEqual(result, False)
@@ -153,7 +161,7 @@ class checkreportvalid_test(unittest.TestCase):
 @unittest.skipIf(os.environ.get("CI", "").lower() == "true", "CI skip")
 class validateheaders_test(unittest.TestCase):
     def test_headersvalid(self):
-        ts_start = _constants.dictkeydts['2122']['regseastart']
+        ts_start = _constants.dictkeydts["2122"]["regseastart"]
         ts_end = datetime(2021, 12, 31, 23, 30)
         hrs = int((ts_end - ts_start).total_seconds() / 3600)
         ts_test = ts_start + timedelta(hours=random.randint(0, hrs))
@@ -162,7 +170,7 @@ class validateheaders_test(unittest.TestCase):
         self.assertEqual(_parser._validate_headers(result), True)
 
     def test_headersinvalid(self):
-        ts_start = _constants.dictkeydts['2122']['regseastart']
+        ts_start = _constants.dictkeydts["2122"]["regseastart"]
         ts_end = datetime(2021, 12, 31, 23, 30)
         hrs = int((ts_end - ts_start).total_seconds() / 3600)
         ts_test = ts_start + timedelta(hours=random.randint(0, hrs))
@@ -175,35 +183,34 @@ class validateheaders_test(unittest.TestCase):
 
 
 class genurl_test(unittest.TestCase):
-    """Tests for URL generation covering old and new formats.
-    """
+    """Tests for URL generation covering old and new formats."""
 
     def test_old_format_structure(self):
         """Test legacy format before _DT_LEGACYFMT1"""
         ts = datetime(2024, 1, 15, 17, 30)
         url = _gen_url(ts)
-        self.assertIn('Injury-Report_2024-01-15_05PM.pdf', url)
-        self.assertNotIn('05_00PM', url)
+        self.assertIn("Injury-Report_2024-01-15_05PM.pdf", url)
+        self.assertNotIn("05_00PM", url)
 
     def test_new_format_structure(self):
         """Test new format (on/after _DT_NEWFMT15M)"""
         ts = datetime(2026, 1, 6, 17, 0)
         url = _gen_url(ts)
-        self.assertIn('Injury-Report_2026-01-06_05_00PM.pdf', url)
+        self.assertIn("Injury-Report_2026-01-06_05_00PM.pdf", url)
 
     def test_transition_date_legacyfmt1(self):
         """Test the format boundary at _DT_LEGACYFMT1."""
         ts = _DT_LEGACYFMT1
         url = _gen_url(ts)
-        self.assertIn('_03PM.pdf', url)
-        self.assertNotIn('_03_00PM.pdf', url)
+        self.assertIn("_03PM.pdf", url)
+        self.assertNotIn("_03_00PM.pdf", url)
 
     def test_transition_date_legacyfmt2(self):
         """Test the format boundary at _DT_LEGACYFMT2."""
         ts = _DT_LEGACYFMT2
         url = _gen_url(ts)
-        self.assertIn('_04PM.pdf', url)
-        self.assertNotIn('_04_00PM.pdf', url)
+        self.assertIn("_04PM.pdf", url)
+        self.assertNotIn("_04_00PM.pdf", url)
 
     def test_legacy_gap_err(self):
         gap_time = _DT_LEGACYFMT1 + timedelta(minutes=10)
@@ -217,71 +224,71 @@ class genurl_test(unittest.TestCase):
         hour = random.randint(0, 23)
         minute = random.randint(0, 59)
         ts = datetime(2024, 3, 15, hour, minute)  # before legacy format 1
-        expected_hour = ts.replace(minute=0).strftime('%I%p')
+        expected_hour = ts.replace(minute=0).strftime("%I%p")
         url = _gen_url(ts)
-        self.assertIn(f'_{expected_hour}.pdf', url)
+        self.assertIn(f"_{expected_hour}.pdf", url)
 
     def test_old_format_random_hm2(self):
         hour = random.randint(0, 8)
         minute = random.randint(0, 59)
         ts = datetime(2025, 12, 22, hour, minute)  # legacy format 2
-        expected_hour = ts.replace(minute=0).strftime('%I%p')
+        expected_hour = ts.replace(minute=0).strftime("%I%p")
         url = _gen_url(ts)
-        self.assertIn(f'_{expected_hour}.pdf', url)
+        self.assertIn(f"_{expected_hour}.pdf", url)
 
     def test_old_format_am_time(self):
         ts = datetime(2024, 3, 10, 9, 30)
         url = _gen_url(ts)
-        self.assertIn('_09AM.pdf', url)
+        self.assertIn("_09AM.pdf", url)
 
     def test_old_format_pm_time(self):
         ts = datetime(2024, 3, 10, 14, 30)
         url = _gen_url(ts)
-        self.assertIn('_02PM.pdf', url)
+        self.assertIn("_02PM.pdf", url)
 
     def test_old_format_noon(self):
         ts = datetime(2024, 3, 10, 12, 30)
         url = _gen_url(ts)
-        self.assertIn('_12PM.pdf', url)
+        self.assertIn("_12PM.pdf", url)
 
     def test_old_format_midnight(self):
         ts = datetime(2024, 3, 10, 0, 30)
         url = _gen_url(ts)
-        self.assertIn('_12AM.pdf', url)
+        self.assertIn("_12AM.pdf", url)
 
     def test_new_format_with_minutes(self):
         ts = datetime(2026, 1, 6, 17, 30)
         url = _gen_url(ts)
-        self.assertIn('_05_30PM.pdf', url)
+        self.assertIn("_05_30PM.pdf", url)
 
     def test_new_format_15_min_intervals(self):
         """Test new format at typical 15-minute intervals."""
         base = datetime(2026, 1, 6, 14, 0)
-        expected_times = ['02_00PM', '02_15PM', '02_30PM', '02_45PM']
+        expected_times = ["02_00PM", "02_15PM", "02_30PM", "02_45PM"]
         for i, expected in enumerate(expected_times):
-            ts = base + timedelta(minutes=i*15)
+            ts = base + timedelta(minutes=i * 15)
             url = _gen_url(ts)
-            self.assertIn(f'_{expected}.pdf', url, f"Failed for {ts}")
+            self.assertIn(f"_{expected}.pdf", url, f"Failed for {ts}")
 
     def test_new_format_am_time(self):
         ts = datetime(2026, 1, 6, 9, 15)
         url = _gen_url(ts)
-        self.assertIn('_09_15AM.pdf', url)
+        self.assertIn("_09_15AM.pdf", url)
 
     def test_new_format_noon(self):
         ts = datetime(2026, 1, 6, 12, 0)
         url = _gen_url(ts)
-        self.assertIn('_12_00PM.pdf', url)
+        self.assertIn("_12_00PM.pdf", url)
 
     def test_new_format_midnight(self):
         ts = datetime(2026, 1, 6, 0, 0)
         url = _gen_url(ts)
-        self.assertIn('_12_00AM.pdf', url)
+        self.assertIn("_12_00AM.pdf", url)
 
     def test_url_base_path(self):
         ts = datetime(2024, 1, 15, 17, 0)
         url = _gen_url(ts)
-        self.assertTrue(url.startswith('https://ak-static.cms.nba.com/referee/injury/Injury-Report_'))
+        self.assertTrue(url.startswith("https://ak-static.cms.nba.com/referee/injury/Injury-Report_"))
 
     def test_gen_url_matches_injury_gen_url(self):
         test_dates = [
@@ -298,19 +305,106 @@ class genurl_test(unittest.TestCase):
 class genfilepath_test(unittest.TestCase):
     def test_old_format_filepath(self):
         ts = datetime(2024, 1, 15, 17, 30)
-        filepath = _gen_filepath(ts, '/data/reports')
-        self.assertIn('Injury-Report_2024-01-15_05PM.pdf', filepath)
+        filepath = _gen_filepath(ts, "/data/reports")
+        self.assertIn("Injury-Report_2024-01-15_05PM.pdf", filepath)
 
     def test_new_format_filepath(self):
         """Test filepath generation for new format dates."""
         ts = datetime(2026, 1, 6, 17, 45)
-        filepath = _gen_filepath(ts, '/data/reports')
-        self.assertIn('Injury-Report_2026-01-06_05_45PM.pdf', filepath)
+        filepath = _gen_filepath(ts, "/data/reports")
+        self.assertIn("Injury-Report_2026-01-06_05_45PM.pdf", filepath)
 
     def test_filepath_includes_directory(self):
         ts = datetime(2024, 1, 15, 17, 0)
-        filepath = _gen_filepath(ts, '/my/custom/path')
-        self.assertTrue(filepath.startswith('/my/custom/path'))
+        filepath = _gen_filepath(ts, "/my/custom/path")
+        self.assertTrue(filepath.startswith("/my/custom/path"))
+
+
+class get_all_injuries_test(unittest.TestCase):
+    def test_parser(self):
+        html = """
+            <div class="TableBaseWrapper">
+            <div id="TableBase" class="TableBase  " data-component="tableDefault">
+                <h4 class="TableBase-title
+                            TableBase-title--large
+
+                            ">
+                    <div class="TeamLogoNameLockup ">
+                        <div class="TeamLogoNameLockup-nameContainer">
+                            <div class="TeamLogoNameLockup-name"><span class="TeamName">RandomTeam</span></div>
+                        </div>
+                    </div>
+                </h4>
+                <div class="TableBase-shadows">
+                    <div class="TableBase-overflow">
+                        <table class="TableBase-table">
+                            <colgroup class="TableBase-colGroup">
+                                <col style=" width: 35%;" class="TableBase-colGroupCol--player">
+                                <col class="">
+                                <col class="TableBase-colGroupCol--date">
+                                <col style=" width: 20%;" class="">
+                                <col style=" width: 40%;" class="">
+                            </colgroup>
+                            <thead>
+                            <tr class="TableBase-headTr">
+                                <th class="TableBase-headTh">
+
+                                    Player
+
+                                </th>
+                                <th class="TableBase-headTh">
+
+                                    Position
+
+                                </th>
+                                <th class="TableBase-headTh">
+
+                                    Updated
+
+                                </th>
+                                <th class="TableBase-headTh">
+
+                                    Injury
+
+                                </th>
+                                <th class="TableBase-headTh">
+
+                                    Injury Status
+
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="TableBase-bodyTr">
+                                <td class="TableBase-bodyTd"><span
+                                        class="CellPlayerName--long">NBA Injured Player</span>
+                                </td>
+                                <td class="TableBase-bodyTd">
+                                    SG
+                                </td>
+                                <td class="TableBase-bodyTd"><span class="CellGameDate">
+                    Tue, Feb 10
+                </span></td>
+                                <td class="TableBase-bodyTd">
+                                    Ankle
+                                </td>
+                                <td class="TableBase-bodyTd">
+                                    Game Time Decision
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <span class="TableBase-shadowLeft" style="display: none;"></span><span class="TableBase-shadowRight"
+                                                                                           style="display: none;"></span></div>
+            </div>
+        </div>
+            """
+        scraper = injury.InjuryScraper()
+        df = scraper.parse(html)
+        self.assertEqual(len(df), 1)
+        self.assertEqual(df.loc[0, "Name"], "NBA Injured Player")
+        self.assertEqual(df.loc[0, "Team"], "RandomTeam")
 
 
 if __name__ == "__main__":
@@ -319,4 +413,4 @@ if __name__ == "__main__":
     unittest.TextTestRunner().run(unittest.TestLoader().loadTestsFromTestCase(getinjurydata_test))
     unittest.TextTestRunner().run(unittest.TestLoader().loadTestsFromTestCase(checkreportvalid_test))
     unittest.TextTestRunner().run(unittest.TestLoader().loadTestsFromTestCase(validateheaders_test))
-
+    unittest.TextTestRunner().run(unittest.TestLoader().loadTestsFromTestCase(get_all_injuries_test))
