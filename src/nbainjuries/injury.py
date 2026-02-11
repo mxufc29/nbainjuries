@@ -84,35 +84,37 @@ def gen_url(timestamp: datetime) -> str:
     return _gen_url(timestamp)
 
 
-def get_all_injuries() -> pd.DataFrame:
-    """
-    Returns a dataframe containing injury data for all injured players.
-    """
-    opts = Options()
-    opts.add_argument("--headless")
+class InjuryScraper:
+    def __init__(self):
+        opts = Options()
+        opts.add_argument("--headless")
 
-    service = Service(ChromeDriverManager().install())
-    driver = webdriver.Chrome(options=opts, service=service)
-    driver.get(_constants.all_injuries_url)
+        service = Service(ChromeDriverManager().install())
+        driver = webdriver.Chrome(options=opts, service=service)
+        self.driver = driver
 
-    html = driver.page_source
-    soup = BeautifulSoup(html, "html.parser")
+    def __del__(self):
+        self.driver.close()
 
-    team_injuries = soup.find_all("div", class_="TableBaseWrapper")
-    injuries = []
-    for team in team_injuries:
-        team_name = team.find("div", class_="TeamLogoNameLockup-name").get_text(strip=True)
-        players = team.find_all("tr", class_="TableBase-bodyTr")
-        for player in players:
-            player_td = player.find_all("td", class_="TableBase-bodyTd")
-            player_data = {
-                "Team": team_name,
-                "Name": player.find("span", class_="CellPlayerName--long").get_text(strip=True),
-                "Updated": player.find("span", class_="CellGameDate").get_text(strip=True),
-                "Injury": player_td[3].get_text(strip=True),
-                "Status": player_td[4].get_text(strip=True),
-            }
-            injuries.append(player_data)
-    driver.quit()
+    def parse(self, html):
+        soup = BeautifulSoup(html, "html.parser")
+        team_injuries = soup.find_all("div", class_="TableBaseWrapper")
+        injuries = []
+        for team in team_injuries:
+            team_name = team.find("div", class_="TeamLogoNameLockup-name").get_text(strip=True)
+            players = team.find_all("tr", class_="TableBase-bodyTr")
+            for player in players:
+                player_td = player.find_all("td", class_="TableBase-bodyTd")
+                player_data = {
+                    "Team": team_name,
+                    "Name": player.find("span", class_="CellPlayerName--long").get_text(strip=True),
+                    "Updated": player.find("span", class_="CellGameDate").get_text(strip=True),
+                    "Injury": player_td[3].get_text(strip=True),
+                    "Status": player_td[4].get_text(strip=True),
+                }
+                injuries.append(player_data)
+        return pd.DataFrame(injuries).sort_values("Team")
 
-    return pd.DataFrame(injuries).sort_values("Team")
+    def get_data(self):
+        self.driver.get(_constants.all_injuries_url)
+        return self.parse(self.driver.page_source)

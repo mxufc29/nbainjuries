@@ -1,4 +1,3 @@
-import jpype
 import jpype.imports
 from tabula.backend import jar_path
 
@@ -13,4 +12,4 @@ from importlib.metadata import version
 from . import injury, injury_asy
 
 __version__ = version(__package__)
-__all__ = ['injury', 'injury_asy']
+__all__ = ["injury", "injury_asy"]
