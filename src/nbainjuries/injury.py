@@ -14,7 +14,7 @@ from ._util import _gen_url, _gen_filepath
 
 
 def get_reportdata(
-        timestamp: datetime, local: bool = False, localdir: str | PathLike = None, return_df: bool = False, **kwargs
+    timestamp: datetime, local: bool = False, localdir: str | PathLike = None, return_df: bool = False, **kwargs
 ):
     """
     Extract injury data from the injury report at a specific date/time
@@ -30,19 +30,19 @@ def get_reportdata(
         area_bounds = _constants.area_params2223_a
         col_bounds = _constants.cols_params2223_a
     elif (
-            datetime(year=2023, month=5, day=2, hour=17, minute=30)
-            <= timestamp
-            <= _constants.dictkeydts["2223"]["ploffend"]
+        datetime(year=2023, month=5, day=2, hour=17, minute=30)
+        <= timestamp
+        <= _constants.dictkeydts["2223"]["ploffend"]
     ):  # remainder of 22-23 season
         area_bounds = _constants.area_params2223_b
         col_bounds = _constants.cols_params2223_b
     elif (
-            _constants.dictkeydts["2324"]["regseastart"] <= timestamp <= _constants.dictkeydts["2324"]["ploffend"]
+        _constants.dictkeydts["2324"]["regseastart"] <= timestamp <= _constants.dictkeydts["2324"]["ploffend"]
     ):  # 23-24 season
         area_bounds = _constants.area_params2324
         col_bounds = _constants.cols_params2324
     elif (
-            _constants.dictkeydts["2425"]["regseastart"] <= timestamp <= _constants.dictkeydts["2425"]["ploffend"]
+        _constants.dictkeydts["2425"]["regseastart"] <= timestamp <= _constants.dictkeydts["2425"]["ploffend"]
     ):  # 24-25 season
         area_bounds = _constants.area_params2425
         col_bounds = _constants.cols_params2425
