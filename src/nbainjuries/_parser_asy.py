@@ -1,4 +1,6 @@
 from os import PathLike
+import os
+import tempfile
 import pandas as pd
 import PyPDF2
 from io import BytesIO
@@ -21,19 +23,39 @@ import tabula
 _jvm_lock = threading.Lock()
 
 
+def _download_pdf_bytes_sync(url: str, headers: dict | None = None) -> bytes:
+    """Download PDF bytes using curl_cffi (sync), for use in asyncio.to_thread."""
+    from curl_cffi import requests as cffi_requests
+    hdrs = headers if headers is not None else requestheaders
+    resp = cffi_requests.get(url, impersonate='chrome', headers=hdrs, timeout=30)
+    resp.raise_for_status()
+    return resp.content
+
+
 async def validate_irurl_async(filepath: str | PathLike, session: ClientSession, **kwargs):
     """
     :param filepath: url of report
     :param session:
     :param kwargs: custom headers
-    :return: response object (if validation succeeds)
+    :return: PDF content bytes (if validation succeeds)
     """
     try:
-        async with session.get(filepath, **kwargs) as resp:
-            resp.raise_for_status()
-            print(f"Validated {filepath.split('/')[-1].rsplit('.', 1)[0]}.")
-            return await resp.read()
-    except aiohttp.ClientError as e_gen:
+        # Try curl_cffi first (in a thread since it's sync) to bypass Akamai bot detection
+        headers = kwargs.get('headers', requestheaders)
+        pdf_content = await asyncio.to_thread(_download_pdf_bytes_sync, filepath, headers)
+        print(f"Validated {filepath.split('/')[-1].rsplit('.', 1)[0]}.")
+        return pdf_content
+    except ImportError:
+        # Fall back to aiohttp if curl_cffi is not installed
+        try:
+            async with session.get(filepath, **kwargs) as resp:
+                resp.raise_for_status()
+                print(f"Validated {filepath.split('/')[-1].rsplit('.', 1)[0]}.")
+                return await resp.read()
+        except aiohttp.ClientError as e_gen:
+            print(f"Failed validation - {filepath.split('/')[-1].rsplit('.', 1)[0]}.")
+            raise URLRetrievalError(filepath, e_gen)
+    except Exception as e_gen:
         print(f"Failed validation - {filepath.split('/')[-1].rsplit('.', 1)[0]}.")
         raise URLRetrievalError(filepath, e_gen)
         ## TODO logging?
@@ -74,22 +96,31 @@ async def extract_irurl_async(filepath: str | PathLike, session: ClientSession, 
     if cols_otherpgs is None:
         cols_otherpgs = cols_headpg
 
-    # First pg
-    dfs_headpg = await asyncio.to_thread(_read_pdfjvmwrap, filepath, stream=True, user_agent=requestheaders['User-Agent'],
-                                         area=area_headpg, columns=cols_headpg, pages=1)
-    _validate_headers(dfs_headpg[0])
-    # Following pgs
-    dfs_otherpgs = []  # default to empty if single pg
-    if pdf_numpgs >= 2:
-        dfs_otherpgs = await asyncio.to_thread(_read_pdfjvmwrap, filepath, stream=True, user_agent=requestheaders['User-Agent'],
-                                               area=area_otherpgs, columns=cols_otherpgs, pages='2-' + str(pdf_numpgs),
-                                               pandas_options={'header': None})
-        # default to pandas_options={'header': 'infer'}
-        # Override with pandas_options={'header': None}; manually drop included headers if necessary
-    # Processing
-    df_rawdata = __concat_injreppgs(dflist_headpg=dfs_headpg, dflist_otherpgs=dfs_otherpgs)
-    df_cleandata = __clean_injrep(df_rawdata)
-    return df_cleandata
+    # Save to temp file for tabula (tabula can't read from BytesIO)
+    with tempfile.NamedTemporaryFile(suffix='.pdf', delete=False) as tmp:
+        tmp.write(pdf_content)
+        tmp_path = tmp.name
+
+    try:
+        # First pg — read from local temp file instead of URL
+        dfs_headpg = await asyncio.to_thread(_read_pdfjvmwrap, tmp_path, stream=True,
+                                             area=area_headpg, columns=cols_headpg, pages=1)
+        _validate_headers(dfs_headpg[0])
+        # Following pgs
+        dfs_otherpgs = []  # default to empty if single pg
+        if pdf_numpgs >= 2:
+            dfs_otherpgs = await asyncio.to_thread(_read_pdfjvmwrap, tmp_path, stream=True,
+                                                   area=area_otherpgs, columns=cols_otherpgs,
+                                                   pages='2-' + str(pdf_numpgs),
+                                                   pandas_options={'header': None})
+            # default to pandas_options={'header': 'infer'}
+            # Override with pandas_options={'header': None}; manually drop included headers if necessary
+        # Processing
+        df_rawdata = __concat_injreppgs(dflist_headpg=dfs_headpg, dflist_otherpgs=dfs_otherpgs)
+        df_cleandata = __clean_injrep(df_rawdata)
+        return df_cleandata
+    finally:
+        os.unlink(tmp_path)
 
 
 async def extract_irlocal_async(filepath: str | PathLike, area_headpg: list, cols_headpg: list,
@@ -121,4 +152,3 @@ async def extract_irlocal_async(filepath: str | PathLike, area_headpg: list, col
     df_rawdata = __concat_injreppgs(dflist_headpg=dfs_headpg, dflist_otherpgs=dfs_otherpgs)
     df_cleandata = __clean_injrep(df_rawdata)
     return df_cleandata
-

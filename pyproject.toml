@@ -24,6 +24,7 @@ classifiers = ["Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Information Analysis"]
 dependencies = [
   "aiohttp>=3.9.3,<4.0",
+  "curl_cffi>=0.7,<0.14",
   "jpype1>=1.5.2,<1.6.0",
   "pandas>=2.2.3,<3.0",
   "PyPDF2>=3.0.1,<4.0",
